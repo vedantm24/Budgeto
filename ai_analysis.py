@@ -39,24 +39,42 @@ def run_ai_analysis(list_expenses_func=list_expenses):
     )
 
     # Send the budget analysis task and expense data to the AI model.
-    completion = client.chat.completions.create(
-        model="moonshotai/Kimi-K2-Instruct-0905",
-        messages=[
-            {
-                "role": "user",
-                "content": content,
-            }
-        ],
-        temperature=0.7,
-        max_tokens=800,
-    )
-
     try:
-        response_text = completion.choices[0].message.content
-        print("AI analysis result:\n", response_text)
-        
+        completion = client.chat.completions.create(
+            model="moonshotai/Kimi-K2-Instruct-0905",
+            messages=[
+                {
+                    "role": "user",
+                    "content": content,
+                }
+            ],
+            temperature=0.7,
+            max_tokens=800,
+        )
     except Exception as e:
-        print("AI analysis failed:", e)
+        print("AI analysis request failed:", e)
+        return None
 
+    response_text = None
+    try:
+        choices = getattr(completion, "choices", None)
+        if not choices:
+            raise ValueError("No choices returned by the model.")
+
+        first_choice = choices[0]
+        if isinstance(first_choice, dict):
+            response_text = first_choice.get("message", {}).get("content")
+        else:
+            message = getattr(first_choice, "message", None)
+            response_text = getattr(message, "content", None) if message is not None else None
+
+        if not response_text:
+            raise ValueError("Model response is empty or malformed.")
+
+    except Exception as e:
+        print("AI analysis failed to parse model output:", e)
+        return None
+
+    print("AI analysis result:\n", response_text)
     return response_text
 
