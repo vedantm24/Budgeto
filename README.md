@@ -2,8 +2,8 @@
 
 Budgeto is a simple command-line personal finance tracker with support for:
 - Add expenses (amount, category, date, description)
-- View expenses (list, filter by category or date)
-- Update existing expenses
+- Read and view expenses from `expenses.json`
+- Filter, update, or delete existing expenses
 - Persist expenses to `expenses.json`
 - Basic AI-driven budget analysis (OpenAI + HuggingFace router)
 
@@ -45,10 +45,11 @@ Menu options:
 - Saves to memory and `expenses.json`
 
 ### View expenses
-- List all
+- Read and list all expenses loaded from `expenses.json`
 - Filter by category
 - Filter by date
 - Update expense by index
+- Delete expense by index
 
 ### AI analysis
 - Summarizes spending

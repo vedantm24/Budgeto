@@ -2,11 +2,18 @@ from datetime import datetime
 
 from storage import load_expenses, save_expenses
 
+"""Expense storage and interactive input helpers.
+
+This module keeps an in-memory expense list loaded from disk at startup.
+Add, update, delete, list, and filter operations update the persisted JSON file.
+"""
+
 # In-memory store for expenses, loaded from JSON file at startup.
 expenses = load_expenses()  # each item is a dict with keys: amount, category, date, description
 
 
 def _validate_date(date_text):
+    """Parse a YYYY-MM-DD string into a date object or return None."""
     try:
         return datetime.strptime(date_text, "%Y-%m-%d").date()
     except ValueError:
@@ -15,6 +22,7 @@ def _validate_date(date_text):
 
 def add_expense(amount, category, date, description):
     """Append a new expense record to the in-memory list and save to disk."""
+    # Create a normalized expense record and store it persistently.
     record = {
         "amount": float(amount),
         "category": category.strip(),
@@ -43,6 +51,16 @@ def update_expense(index, amount=None, category=None, date=None, description=Non
 
     save_expenses(expenses)
     return record
+
+
+def delete_expense(index):
+    """Remove an expense record by index and save to disk."""
+    if index < 0 or index >= len(expenses):
+        raise IndexError("Expense index out of range")
+
+    removed = expenses.pop(index)
+    save_expenses(expenses)
+    return removed
 
 
 def list_expenses():

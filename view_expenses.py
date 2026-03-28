@@ -1,13 +1,19 @@
 from datetime import datetime
-from add_expense import list_expenses, filter_expenses_by_category, filter_expenses_by_date, update_expense
+from add_expense import delete_expense, list_expenses, filter_expenses_by_category, filter_expenses_by_date, update_expense
+
+"""Interactive expense viewing and modification workflow.
+
+This module prints expense records, supports filtering, and enables update/delete actions.
+"""
 
 
 def _print_expense(e, index=None):
+    """Print a single expense record with an optional index prefix."""
     prefix = f"{index}. " if index is not None else "- "
     print(f"{prefix}{e['date']} | {e['category']} | ₹{e['amount']:.2f} | {e['description']}")
 
 
-def _select_expense_index():
+def _select_expense_index(action="select"):
     items = list_expenses()
     if not items:
         print("No expenses available.")
@@ -16,7 +22,8 @@ def _select_expense_index():
     for idx, exp in enumerate(items):
         _print_expense(exp, idx)
 
-    sel = input("Enter expense index to update: ").strip()
+    # Ask the user to choose an expense by its displayed index.
+    sel = input(f"Enter expense index to {action}: ").strip()
     if not sel.isdigit():
         print("Invalid index.")
         return None
@@ -36,9 +43,10 @@ def view_expenses():
     print("2. Filter by category")
     print("3. Filter by date")
     print("4. Update expense")
-    print("5. Back")
+    print("5. Delete expense")
+    print("6. Back")
 
-    choice = input("Select an option [1-5]: ").strip()
+    choice = input("Select an option [1-6]: ").strip()
 
     if choice == "1":
         items = list_expenses()
@@ -71,7 +79,7 @@ def view_expenses():
             _print_expense(exp)
 
     elif choice == "4":
-        idx = _select_expense_index()
+        idx = _select_expense_index("update")
         if idx is None:
             return
 
@@ -101,6 +109,22 @@ def view_expenses():
         print("Updated expense:", updated)
 
     elif choice == "5":
+        idx = _select_expense_index("delete")
+        if idx is None:
+            return
+
+        current = list_expenses()[idx]
+        print("Selected expense to delete:")
+        _print_expense(current, idx)
+        confirm = input("Are you sure you want to delete this expense? [y/N]: ").strip().lower()
+        if confirm != "y":
+            print("Delete cancelled.")
+            return
+
+        deleted = delete_expense(idx)
+        print("Deleted expense:", deleted)
+
+    elif choice == "6":
         return
     else:
         print("Invalid choice")

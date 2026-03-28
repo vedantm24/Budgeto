@@ -2,10 +2,13 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+"""JSON persistence helpers for Budgeto expenses."""
+
 DEFAULT_EXPENSES_FILE = Path("expenses.json")
 
 
 def _serialize_expense(expense):
+    """Convert an expense record into JSON-serializable form."""
     return {
         "amount": expense["amount"],
         "category": expense["category"],
@@ -15,6 +18,7 @@ def _serialize_expense(expense):
 
 
 def _deserialize_expense(data):
+    """Convert raw JSON data into a normalized expense record."""
     d = {
         "amount": float(data["amount"]),
         "category": str(data.get("category", "")).strip(),

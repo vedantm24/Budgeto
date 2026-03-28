@@ -1,11 +1,18 @@
 import sys
 
+"""Budgeto command-line entrypoint.
+
+This module shows the main menu and routes each user selection to the
+appropriate expense management or AI analysis workflow.
+"""
+
 from add_expense import add_expenses
 from view_expenses import view_expenses
 from ai_analysis import run_ai_analysis
 
 
 def print_menu():
+    # Show the main menu options available to the user.
     print("\nBudgeto - Main Menu")
     print("1. Add expenses")
     print("2. View expenses")
@@ -18,6 +25,7 @@ def main():
         print_menu()
         choice = input("Select an option [1-4]: ").strip()
 
+        # Dispatch the selected menu action.
         if choice == "1":
             add_expenses()
         elif choice == "2":
@@ -32,6 +40,7 @@ def main():
 
 
 if __name__ == "__main__":
+    # Run the app and handle keyboard interrupts cleanly.
     try:
         main()
     except KeyboardInterrupt:

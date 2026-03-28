@@ -3,6 +3,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from view_expenses import list_expenses
 
+"""AI budget analysis helpers.
+
+Uses expenses loaded by the app and sends them to an OpenAI-compatible model
+for spending summary and budget recommendations.
+"""
+
 load_dotenv()  # Load environment variables from .env file
 
 client = OpenAI(
@@ -14,6 +20,7 @@ client = OpenAI(
 def run_ai_analysis(list_expenses_func=list_expenses):
     """Run AI analysis using expenses list and return model response."""
     expenses = list_expenses_func()
+    # Ensure there is valid expense data before calling the AI model.
     if not isinstance(expenses, list) or not expenses:
         print("No expenses data found for AI analysis.")
         return
@@ -31,6 +38,7 @@ def run_ai_analysis(list_expenses_func=list_expenses):
         f"Here are the expense records:\n{expenses}\n"
     )
 
+    # Send the budget analysis task and expense data to the AI model.
     completion = client.chat.completions.create(
         model="moonshotai/Kimi-K2-Instruct-0905",
         messages=[
